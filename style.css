@@ -1,0 +1,48 @@
+/* Additional styling for onCourse. */
+
+body {
+  background-color: #0c164f;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+h3, h5 {
+  font-family: 'Play', sans-serif;
+}
+
+.input-group-text {
+  color: #0c164f;
+}
+
+.navbar-light {
+  background-color: #7649fe;
+}
+
+.navbar-brand {
+  font-family: 'Play', sans-serif;
+  font-size: 30px;
+}
+
+.btn-primary {
+  background-color: #7649fe;
+  color: white;
+}
+
+.btn-drop {
+  color: #7649fe;
+  font-size: 20px;
+}
+
+.card-body {
+  color: #0c164f;
+}
+
+.detail {
+  font-family: 'Play', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.modal-content .text-primary {
+  color: orange;
+}
