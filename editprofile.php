@@ -1,44 +1,32 @@
-<!-- NEED TO FIX -->
-
 <?php
 
 	include('config/db_connect.php');
 
 	include('includes/session.php');
 
-	// Check for profile to display
-	if (isset($_SESSION['id'])) {
-		// run query to get collection of majors
-		$sql = "SELECT major FROM majors";
+	// run query to get collection of majors
+	$sql = "SELECT major FROM majors";
 
-		$result = mysqli_query($conn, $sql);
+	$result = mysqli_query($conn, $sql);
 
-		$majors = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	$majors = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-		mysqli_free_result($result);
+	mysqli_free_result($result);
 
-		// run query to get user
-		$id = mysqli_real_escape_string($conn, $_SESSION['id']);
+	// run query to get user
+	$id = mysqli_real_escape_string($conn, $_SESSION['id']);
 
-		$sql = "SELECT * FROM users WHERE id = $id";
+	$sql = "SELECT * FROM users WHERE id = $id";
 
-		$result = mysqli_query($conn, $sql);
+	$result = mysqli_query($conn, $sql);
 
-		$user = mysqli_fetch_assoc($result);
+	$user = mysqli_fetch_assoc($result);
 
-		mysqli_free_result($result);
+	mysqli_free_result($result);
 
-		mysqli_close($conn);
-
-    $name = $user['name'];
-    $major = $user['major'];
-	}
-  else {
-    $name = $_POST['name'];
+	if (isset($_POST['submit'])) {
+		$name = $_POST['name'];
   	$major = $_POST['major'];
-  }
-
-  if (isset($_POST['submit'])) {
 
 		// check name
 		if(empty($name)) {
@@ -54,32 +42,28 @@
 
 			// Run query
 			if ($result = mysqli_query($conn, $sql)) {
-        $valid = true;
 
-        // Check that user exists
-        if (mysqli_num_rows($result) > 0) {
-            $valid = false;
-        } else {
+				// Escape our data
+				$name = mysqli_real_escape_string($conn, $name);
+        $major = mysqli_real_escape_string($conn, $major);
 
-					// Escape our data
-					$name = mysqli_real_escape_string($conn, $name);
-          $major = mysqli_real_escape_string($conn, $major);
+				// SQL
+				$sql = "UPDATE users SET name = '$name', major = '$major' WHERE id = $id";
 
-					// SQL
-					$sql = "UPDATE users SET name = '$name', major = '$major' WHERE id = $id";
-
-					// Run query
-					if (mysqli_query($conn, $sql)) {
-						header("Location: profile.php");
-					}  else {
-						echo 'query error: '. mysqli_error($conn);
-						die();
-					}
+				// Run query
+				if (mysqli_query($conn, $sql)) {
+					mysqli_close($conn);
+					header("Location: profile.php");
+				}  else {
+					echo 'query error: '. mysqli_error($conn);
+					die();
 				}
 			}
 		}
+	} else {
+		$name = $user['name'];
+    $major = $user['major'];
 	}
-
 ?>
 
 <!DOCTYPE html>
@@ -95,7 +79,7 @@
 
     <div class="container text-center">
   	   <h3>Edit Profile</h3>
-      <form>
+      <form method="POST">
         <!-- NAME -->
         <div class="text-danger">
 					<p><?php echo $errors['name']; ?></p>
@@ -104,7 +88,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">Name</span>
           </div>
-          <input type="text" class="form-control" value="<?php echo htmlspecialchars($name); ?>">
+          <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($name); ?>">
         </div>
 
         <!-- MAJOR -->
@@ -124,7 +108,7 @@
         </div>
 
         <!-- SUBMIT BUTTON -->
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
 

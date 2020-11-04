@@ -1,3 +1,5 @@
+<!-- ORGANIZE COURSES BY MAJOR -->
+
 <?php
 
 	include('config/db_connect.php');
@@ -21,6 +23,30 @@
 	mysqli_free_result($result);
 
 	mysqli_close($conn);
+
+	// SEARCH BAR FUNTIONALITY
+	if (isset($_POST['submit'])) {
+		$searchterm = $_POST['searchterm'];
+
+		$key = 0;
+
+		foreach ($courses as $c) {
+			$title = $c['code']." ".$c['name'];
+			if (stristr($title, $searchterm)) {
+				$course_search[$key] = $c;
+				$key += 1;
+			}
+		}
+
+		if (empty($course_search)) {
+			$found = false;
+		} else {
+			$_SESSION['searched'] = $course_search;
+			$found = true;
+		}
+
+		header("Location: results.php?searchterm=".$searchterm."&src=directory&found=".$found);
+	}
 ?>
 
 <!DOCTYPE html>
@@ -40,12 +66,19 @@
 
       <div class="row">
         <div class="col-sm-6 my-3">
-          <form method="POST">
-            <div class="input-group">
-              <input type="search" class="form-control" placeholder="Search">
-            </div>
-          </form>
+					<!-- SEARCH BAR -->
+					<form method="POST">
+						<div class="input-group">
+						  <input type="text" class="form-control" name="searchterm" placeholder="Search">
+						  <div class="input-group-append">
+
+						    <button class="btn btn-primary" type="submit" name="submit" id="button-addon1"><i class="fas fa-search"></i></button>
+						  </div>
+						</div>
+					</form>
         </div>
+
+				<!-- LIBRARY BUTTON -->
         <div class="col-sm-6 my-3">
           <p><a class="btn btn-primary" style="width: 100%;" href="library.php?id=<?php echo $_SESSION['id']; ?>">Your Course Library</a></p>
         </div>
@@ -82,15 +115,15 @@
       <!-- MAJOR -->
       <div id="accordion">
         <div class="card my-3">
-          <div class="card-header" id="headingOne">
+          <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
-              <button class="btn btn-drop" data-toggle="collapse" data-target="#collapseOne">
+              <button class="btn btn-drop" data-toggle="collapse" data-target="#collapseTwo">
                 Computer Science
               </button>
             </h5>
           </div>
 
-          <div id="collapseOne" class="collapse show">
+          <div id="collapseTwo" class="collapse">
             <?php foreach($courses as $course) { ?>
               <div class="col-sm-12 my-3">
                 <div class="card">

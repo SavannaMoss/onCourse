@@ -13,8 +13,6 @@
 
 	mysqli_free_result($result);
 
-	mysqli_close($conn);
-
 	// rest of registration
 	$username = $_POST['username'];
 	$password = $_POST['password'];
@@ -75,6 +73,7 @@
 
 					// Run query
 					if (mysqli_query($conn, $sql)) {
+						mysqli_close($conn);
 						header("Location: login.php");
 					} else {
 						echo 'query error: '. mysqli_error($conn);

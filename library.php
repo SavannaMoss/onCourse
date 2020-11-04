@@ -5,43 +5,50 @@
 	include('includes/session.php');
 
 	// Check for info to display
-	if (isset($_SESSION['id'])) {
-		$id = mysqli_real_escape_string($conn, $_SESSION['id']);
+	$id = mysqli_real_escape_string($conn, $_SESSION['id']);
 
-		// USER'S CREDITS
-		$sql = "SELECT * FROM users WHERE id = $id";
+	// USER'S CREDITS
+	$sql = "SELECT * FROM users WHERE id = $id";
 
-		$result = mysqli_query($conn, $sql);
+	$result = mysqli_query($conn, $sql);
 
-		$user = mysqli_fetch_assoc($result);
+	$user = mysqli_fetch_assoc($result);
 
-		$credits_needed = 124 - $user['credits'];
+	$credits_needed = 124 - $user['credits'];
 
-    // USER'S COURSES
-		$sql = "SELECT c.code, c.name, c.description, uc.current FROM courses AS c INNER JOIN user_courses AS uc ON uc.userid = $id AND c.code = uc.coursecode";
+  // USER'S COURSES
+	$sql = "SELECT c.code, c.name, c.description, uc.current FROM courses AS c INNER JOIN user_courses AS uc ON uc.userid = $id AND c.code = uc.coursecode";
 
-		$result = mysqli_query($conn, $sql);
+	$result = mysqli_query($conn, $sql);
 
-		$courses = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	$courses = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-		// SEARCH BAR FUNTIONALITY -- DOES NOT WORK
-		$searchterm = '';
-		if (isset($_POST['submit'])) {
+	mysqli_free_result($result);
 
-			$searchterm = $_POST['searchterm'];
-			$course_search = [];
+	mysqli_close($conn);
 
-			foreach ($courses as $c) {
-				$title = $c['code'].$c['name'];
-				if (strpos($title, $searchterm) !== false) {
-					array_push($course_search, $c);
-				}
+	// SEARCH BAR FUNTIONALITY
+	if (isset($_POST['submit'])) {
+		$searchterm = $_POST['searchterm'];
+
+		$key = 0;
+
+		foreach ($courses as $c) {
+			$title = $c['code']." ".$c['name'];
+			if (stristr($title, $searchterm)) {
+				$course_search[$key] = $c;
+				$key += 1;
 			}
 		}
 
-		mysqli_free_result($result);
+		if (empty($course_search)) {
+			$found = false;
+		} else {
+			$_SESSION['searched'] = $course_search;
+			$found = true;
+		}
 
-		mysqli_close($conn);
+		header("Location: results.php?searchterm=".$searchterm."&src=library&found=".$found);
 	}
 ?>
 
@@ -81,18 +88,18 @@
 
         <div class="col-sm-6 my-3">
 					<!-- SEARCH BAR -->
-          <form class="form-inline" method="POST">
-            <input type="search" class="form-control mr-2" style="width: 89%;" name="searchterm" placeholder="Search">
+					<form method="POST">
+						<div class="input-group">
+						  <input type="text" class="form-control" name="searchterm" placeholder="Search">
+						  <div class="input-group-append">
 
-						<!-- Button trigger modal -->
-						<input type="submit" style="display: none;">
-						<button type="button" class="btn btn-primary" style="width: 9%;" data-toggle="modal" data-target="#searchModal">
-							<img src="images/search-icon.png" class="img-fluid" alt="Black magnifying glass icon for search bar.">
-						</button>
-          </form>
+						    <button class="btn btn-primary" type="submit" name="submit" id="button-addon1"><i class="fas fa-search"></i></button>
+						  </div>
+						</div>
+					</form>
 
 					<!-- DIRECTORY BUTTON -->
-          <p><a class="btn btn-primary mt-3" style="width: 100%;" href="directory.php">Find New Courses</a></p>
+          <p><a class="btn btn-primary mt-4" style="width: 100%;" href="directory.php">Find New Courses</a></p>
         </div>
       </div>
 
@@ -127,7 +134,7 @@
           </div>
         </div>
 
-				<!-- Current Courses -->
+				<!-- Past Courses -->
         <div class="card my-3">
           <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
@@ -162,44 +169,6 @@
     <div>
       <?php include('includes/footer.php'); ?>
     </div>
-
-
-		<!-- SEARCH MODAL -->
-		<div class="modal fade modal-custom" id="searchModal" tabindex="-1" role="dialog">
-			<div class="modal-dialog modal-dialog-scrollable" role="document">
-				<div class="modal-content text-body" id="modal-custom">
-
-					<div class="modal-header">
-						<h5 class="modal-title" id="searchModalLabel">Course Search</h5>
-						<button type="button" class="close" data-dismiss="modal">
-							<span>&times;</span>
-						</button>
-					</div>
-
-					<div class="modal-body">
-						<?php if (!empty($course_search)) {
-							foreach($course_search as $course) { ?>
-								<div class="col-sm-12 my-3">
-									<div class="card">
-										<div class="card-body">
-											<h5 class="card-title"><?php echo $course['code'] . " " . $course['name']; ?></h5>
-											<p class="card-text float-left"><?php echo $course['description']; ?></p>
-											<a href="course.php?code=<?php echo $course['code']; ?>" class="btn btn-primary float-right">More Info</a>
-										</div>
-									</div>
-								</div>
-							<?php	}
-						} else { ?>
-							<p>No courses found! Try another search.</p>
-						<?php } ?>
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
 
   </body>
 </html>
