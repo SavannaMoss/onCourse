@@ -4,7 +4,7 @@
 
 	include('includes/session.php');
 
-	// Check for info to display
+	// check for info to display
 	$id = mysqli_real_escape_string($conn, $_SESSION['id']);
 
 	// USER'S CREDITS
@@ -63,37 +63,37 @@
       <?php include('includes/header.php'); ?>
     </div>
 
-    <div class="container">
+    <div class="container" role="main">
 
-      <h3 class="text-center">Course Library</h3>
+      <h1 class="text-center">Course Library</h1>
 
       <div class="row">
-        <div class="col-sm-3 my-3">
+        <div class="col-md-3 my-3">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Credits Taken</h5>
+              <h2 class="card-title">Credits Taken</h2>
               <p class="card-text"><?php echo $user['credits']; ?></p>
             </div>
           </div>
         </div>
 
-        <div class="col-sm-3 my-3">
+        <div class="col-md-3 my-3">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Credits Needed</h5>
-              <p class="card-text"><?php echo $credits_needed; ?></p>
+              <h2 class="card-title">Credits Needed</h2>
+              <p class="card-text"><?php echo $credits_needed < 0 ? 0 : $credits_needed; ?></p>
             </div>
           </div>
         </div>
 
-        <div class="col-sm-6 my-3">
+        <div class="col-md-6 my-3">
 					<!-- SEARCH BAR -->
 					<form method="POST">
 						<div class="input-group">
-						  <input type="text" class="form-control" name="searchterm" placeholder="Search">
+						  <input type="text" class="form-control" name="searchterm" placeholder="Search" required aria-required="true" aria-label="Search Bar">
 						  <div class="input-group-append">
 
-						    <button class="btn btn-primary" type="submit" name="submit" id="button-addon1"><i class="fas fa-search"></i></button>
+						    <button class="btn btn-primary" type="submit" name="submit" aria-label="Search Button"><i class="fas fa-search" alt="Magnifying glass icon. Links to search results."></i></button>
 						  </div>
 						</div>
 					</form>
@@ -103,64 +103,57 @@
         </div>
       </div>
 
-      <div id="accordion">
-
-        <!-- Current Courses -->
-        <div class="card my-3">
-          <div class="card-header" id="headingOne">
-            <h5 class="mb-0">
-              <button class="btn btn-drop" data-toggle="collapse" data-target="#collapseOne">
-                Current Courses
-              </button>
-            </h5>
-          </div>
-
-          <div id="collapseOne" class="collapse show">
-
-							<?php foreach($courses as $course) {
-								if ($course['current'] == 1) { ?>
-										<div class="col-sm-12 my-3">
-											<div class="card">
-												<div class="card-body">
-													<h5 class="card-title"><?php echo $course['code'] . " " . $course['name']; ?></h5>
-													<p class="card-text float-left"><?php echo $course['description']; ?></p>
-													<a href="course.php?code=<?php echo $course['code']; ?>" class="btn btn-primary float-right">More Info</a>
-												</div>
-											</div>
-										</div>
-								<?php	}
-							} ?>
-
-          </div>
+      <!-- Current Courses -->
+      <div class="card my-3">
+        <div class="card-header">
+          <h2 class="mb-0">
+            <button class="btn btn-drop" data-toggle="collapse" data-target="#collapseOne">
+              Current Courses
+            </button>
+          </h2>
         </div>
 
-				<!-- Past Courses -->
-        <div class="card my-3">
-          <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-              <button class="btn btn-drop" data-toggle="collapse" data-target="#collapseTwo">
-                Past Courses
-              </button>
-            </h5>
-          </div>
-
-          <div id="collapseTwo" class="collapse">
-
-							<?php foreach($courses as $course) {
-								if ($course['current'] == 0) { ?>
-										<div class="col-sm-12 my-3">
-											<div class="card">
-												<div class="card-body">
-													<h5 class="card-title"><?php echo $course['code'] . " " . $course['name']; ?></h5>
-													<p class="card-text float-left"><?php echo $course['description']; ?></p>
-													<a href="course.php?code=<?php echo $course['code']; ?>" class="btn btn-primary float-right">More Info</a>
-												</div>
+        <div id="collapseOne" class="collapse show">
+						<?php foreach($courses as $course) {
+							if ($course['current'] == 1) { ?>
+									<div class="col-md-12 my-3">
+										<div class="card">
+											<div class="card-body">
+												<h2 class="card-title"><?php echo $course['code'] . " " . $course['name']; ?></h2>
+												<p class="card-text float-left"><?php echo $course['description']; ?></p>
+												<a href="course.php?code=<?php echo $course['code']; ?>" class="btn btn-primary float-right">More Info</a>
 											</div>
 										</div>
-								<?php	}
-							} ?>
+									</div>
+							<?php	}
+						} ?>
+        </div>
+      </div>
 
-          </div>
+			<!-- Past Courses -->
+      <div class="card my-3">
+        <div class="card-header">
+          <h2 class="mb-0">
+            <button class="btn btn-drop" data-toggle="collapse" data-target="#collapseTwo">
+              Past Courses
+            </button>
+          </h2>
+        </div>
+
+        <div id="collapseTwo" class="collapse">
+						<?php foreach($courses as $course) {
+							if ($course['current'] == 0) { ?>
+									<div class="col-md-12 my-3">
+										<div class="card">
+											<div class="card-body">
+												<h2 class="card-title"><?php echo $course['code'] . " " . $course['name']; ?></h2>
+												<p class="card-text float-left"><?php echo $course['description']; ?></p>
+												<a href="course.php?code=<?php echo $course['code']; ?>" class="btn btn-primary float-right">More Info</a>
+											</div>
+										</div>
+									</div>
+							<?php	}
+						} ?>
         </div>
       </div>
 

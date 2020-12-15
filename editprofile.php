@@ -53,6 +53,7 @@
 				// Run query
 				if (mysqli_query($conn, $sql)) {
 					mysqli_close($conn);
+					$_SESSION['name'] = $name;
 					header("Location: profile.php");
 				}  else {
 					echo 'query error: '. mysqli_error($conn);
@@ -77,8 +78,9 @@
       <?php include('includes/header.php'); ?>
     </div>
 
-    <div class="container text-center">
-  	   <h3>Edit Profile</h3>
+    <div class="container text-center" role="main">
+  	   <h1>Edit Profile</h1>
+
       <form method="POST">
         <!-- NAME -->
         <div class="text-danger">
@@ -86,9 +88,9 @@
 				</div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Name</span>
+            <span class="input-group-text">Name</span>
           </div>
-          <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($name); ?>">
+          <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($name); ?>" required aria-required="true" aria-label="Name">
         </div>
 
         <!-- MAJOR -->
@@ -97,9 +99,9 @@
 				</div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <label class="input-group-text" for="inputGroupSelect01">Major</label>
+            <label class="input-group-text" for="major">Major</label>
           </div>
-          <select name="major" class="custom-select" value="<?php echo htmlspecialchars($major); ?>">
+          <select name="major" class="custom-select" value="<?php echo htmlspecialchars($major); ?>" required aria-required="true" aria-label="Major">
             <option value="" selected>Choose...</option>
 						<?php foreach($majors as $m ) { ?>
 	            <option value="<?php echo $m['major']; ?>" <?php echo $major == $m['major'] ? "selected" : "" ?>><?php echo $m['major']; ?></option>
@@ -108,7 +110,7 @@
         </div>
 
         <!-- SUBMIT BUTTON -->
-        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" name="submit" role="button" class="btn btn-primary">Submit</button>
       </form>
     </div>
 

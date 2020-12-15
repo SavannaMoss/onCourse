@@ -32,14 +32,19 @@
       <?php include('includes/header.php'); ?>
     </div>
 
-    <div class="container text-center">
-      <h3><?php echo htmlspecialchars($user['name']); ?></h3>
+    <div class="container text-center" role="main">
+      <h1><?php echo htmlspecialchars($user['name']); ?></h1>
 
       <p><span class="detail">Major: </span><?php echo htmlspecialchars($user['major']); ?></p>
       <p><span class="detail">Credits: </span><?php echo htmlspecialchars($user['credits']); ?></p>
+			<p><span class="detail">GenEd Credits: </span><?php echo htmlspecialchars($user['gened_credits']); ?></p>
 
       <p><a class="btn btn-primary" href="editprofile.php?id=<?php echo htmlspecialchars($user['id']); ?>">Edit</a></p>
-      <p><a class="btn btn-primary" href="library.php?id=<?php echo htmlspecialchars($user['id']); ?>">Course Library</a></p>
+      <p>
+				<a class="btn btn-primary" href="library.php?id=<?php echo htmlspecialchars($user['id']); ?>">Course Library</a>
+				<a class="btn btn-primary ml-2" href="credits.php?id=<?php echo htmlspecialchars($user['id']); ?>">GenEd Credits</a>
+			</p>
+
   	</div>
 
     <div>

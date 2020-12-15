@@ -21,42 +21,37 @@
 			$errors['password'] = 'Password cannot be blank';
 		}
 
-		if (!array_filter($errors)) { // There are no errors
+		if (!array_filter($errors)) {
 
-			// Escape our data
+			// escape the data
 			$username = mysqli_real_escape_string($conn, $username);
 
       // SQL
 			$sql = "SELECT * FROM users WHERE username = '$username'";
 
-			// Run query
+			// run query
 			if ($result = mysqli_query($conn, $sql)) {
         // fetch the resulting rows as an array
       	$user = mysqli_fetch_assoc($result);
 
         $valid = false;
-        // Check that user exists
+        // check that user exists
         if (mysqli_num_rows($result) > 0) {
           if (password_verify($password, $user['password'])) {
-            // Valid user, do Stuff
             $valid = true;
           }
         }
 
-        // free the $result from memory (good practise)
       	mysqli_free_result($result);
 
-      	// close connection
       	mysqli_close($conn);
 
-        // Handle valid user or not
+        // handle valid user
         if ($valid) {
-					// Set session data
+					// set session data
 					$_SESSION['id'] = $user['id'];
 					$_SESSION['username'] = $user['username'];
 					$_SESSION['name'] = $user['name'];
-					$_SESSION['major'] = $user['major'];
-					$_SESSION['credits'] = $user['credits'];
 
           header("Location: index.php");
         }
@@ -80,8 +75,8 @@
       <?php include('includes/header.php'); ?>
     </div>
 
-    <div class="container text-center">
-      <h3>Login Here</h3>
+    <div class="container text-center" role="main">
+      <h1>Login Here</h1>
       <p>Don't have an account? <a href="register.php">Make one!</a></p>
 
       <?php if(isset($valid) && !$valid) { ?>
@@ -98,7 +93,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">Username</span>
           </div>
-          <input type="text" name="username" class="form-control" placeholder="Username" value="<?php echo htmlspecialchars($username); ?>">
+          <input type="text" name="username" class="form-control" placeholder="Username" value="<?php echo htmlspecialchars($username); ?>" required aria-required="true" aria-label="Username">
         </div>
 
         <!-- PASSWORD -->
@@ -109,7 +104,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">Password</span>
           </div>
-          <input type="password" name="password" class="form-control" placeholder="Password">
+          <input type="password" name="password" class="form-control" placeholder="Password" required aria-required="true" aria-label="Password">
         </div>
 
         <!-- SUBMIT BUTTON -->
